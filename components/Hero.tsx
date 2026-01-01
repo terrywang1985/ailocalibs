@@ -1,10 +1,29 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from './Button';
 import { Shield, WifiOff, Zap, Download, HardDrive, Cpu } from 'lucide-react';
 
+// 默认下载链接（配置加载前使用）
+const DEFAULT_DOWNLOAD_URL = 'https://pub-da80d4fb5ea542d0920e1f478ea9455b.r2.dev/launcher/AILocalabs-Setup-v1.0.0.exe';
+
 export const Hero: React.FC = () => {
+  const [downloadUrl, setDownloadUrl] = useState(DEFAULT_DOWNLOAD_URL);
+
+  // 从配置文件加载下载链接
+  useEffect(() => {
+    fetch('/config.json')
+      .then(res => res.json())
+      .then(config => {
+        if (config.launcher?.downloadUrl) {
+          setDownloadUrl(config.launcher.downloadUrl);
+        }
+      })
+      .catch(() => {
+        // 加载失败时使用默认链接
+      });
+  }, []);
+
   const handleDownload = () => {
-    alert("Coming Soon! The Localabs Launcher is getting its final polish.");
+    window.open(downloadUrl, '_blank');
   };
 
   return (

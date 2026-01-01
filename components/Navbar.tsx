@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Terminal, Menu, X } from 'lucide-react';
-import { Button } from './Button';
+import { Terminal, Menu, X, Download } from 'lucide-react';
+
+// 默认下载链接（配置加载前使用）
+const DEFAULT_DOWNLOAD_URL = 'https://pub-da80d4fb5ea542d0920e1f478ea9455b.r2.dev/launcher/AILocalabs-Setup-v1.0.0.exe';
 
 export const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [downloadUrl, setDownloadUrl] = useState(DEFAULT_DOWNLOAD_URL);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -14,9 +17,19 @@ export const Navbar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleComingSoon = () => {
-    alert("Coming Soon! The Localabs Launcher is getting its final polish.");
-  };
+  // 从配置文件加载下载链接
+  useEffect(() => {
+    fetch('/config.json')
+      .then(res => res.json())
+      .then(config => {
+        if (config.launcher?.downloadUrl) {
+          setDownloadUrl(config.launcher.downloadUrl);
+        }
+      })
+      .catch(() => {
+        // 加载失败时使用默认链接
+      });
+  }, []);
 
   return (
     <nav 
@@ -38,9 +51,14 @@ export const Navbar: React.FC = () => {
           <a href="#features" className="text-gray-400 hover:text-brand-green transition-colors text-sm font-medium">Why Localabs?</a>
           <a href="#how-it-works" className="text-gray-400 hover:text-brand-green transition-colors text-sm font-medium">How it Works</a>
           <a href="#faq" className="text-gray-400 hover:text-brand-green transition-colors text-sm font-medium">FAQ</a>
-          <Button variant="outline" className="py-2 px-4 text-sm" onClick={handleComingSoon}>
-            Launch App
-          </Button>
+          <a 
+            href={downloadUrl}
+            download
+            className="py-2 px-4 text-sm rounded-lg font-bold transition-all duration-300 flex items-center justify-center gap-2 border border-brand-green text-brand-green hover:bg-brand-green/10"
+          >
+            <Download className="w-4 h-4" />
+            Download Launcher
+          </a>
         </div>
 
         {/* Mobile Menu Toggle */}
@@ -57,7 +75,14 @@ export const Navbar: React.FC = () => {
           <a href="#features" className="text-gray-300 hover:text-brand-green" onClick={() => setIsMobileMenuOpen(false)}>Why Localabs?</a>
           <a href="#how-it-works" className="text-gray-300 hover:text-brand-green" onClick={() => setIsMobileMenuOpen(false)}>How it Works</a>
           <a href="#faq" className="text-gray-300 hover:text-brand-green" onClick={() => setIsMobileMenuOpen(false)}>FAQ</a>
-          <Button fullWidth onClick={handleComingSoon}>Download Launcher</Button>
+          <a 
+            href={downloadUrl}
+            download
+            className="w-full py-3 px-6 rounded-lg font-bold transition-all duration-300 flex items-center justify-center gap-2 bg-brand-green text-brand-black hover:bg-brand-greenDark"
+          >
+            <Download className="w-5 h-5" />
+            Download Launcher
+          </a>
         </div>
       )}
     </nav>
