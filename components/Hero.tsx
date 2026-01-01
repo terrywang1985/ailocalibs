@@ -3,7 +3,7 @@ import { Button } from './Button';
 import { Shield, WifiOff, Zap, Download, HardDrive, Cpu } from 'lucide-react';
 
 // 默认下载链接（配置加载前使用）
-const DEFAULT_DOWNLOAD_URL = 'https://pub-da80d4fb5ea542d0920e1f478ea9455b.r2.dev/launcher/AILocalabs-Setup-v1.0.0.exe';
+const DEFAULT_DOWNLOAD_URL = 'https://cdn.ailocalabs.com/launcher/AILocalabs-Setup-v1.0.0.exe';
 
 export const Hero: React.FC = () => {
   const [downloadUrl, setDownloadUrl] = useState(DEFAULT_DOWNLOAD_URL);
